@@ -1,4 +1,6 @@
+use gloo::utils::window;
 use yew::prelude::*;
+use yew_router::Routable;
 use yew_router::prelude::Navigator;
 use yew_router::prelude::use_navigator;
 use yewprint::Icon;
@@ -9,6 +11,7 @@ use crate::theme::ThemeContext;
 use crate::theme::ThemeMsg;
 use crate::theme::ThemeProvider;
 use crate::component::actionbar::{Actionbar, ActionbarOption};
+use crate::util::log;
 
 
 #[function_component]
@@ -46,7 +49,15 @@ fn ThemedApp() -> Html {
     }
 
     let ctx = use_context::<ThemeContext>().expect("No theme context supplied");
-    let page_state = use_state_eq(|| Page::Home);
+    let page_state = use_state_eq(||
+        window()
+            .location()
+            .pathname()
+            .ok()
+            .and_then(|p| Page::recognize(&p))
+            .or(Some(Page::Home))
+            .unwrap()
+    );
     let current_page = *page_state;
 
     html! {
