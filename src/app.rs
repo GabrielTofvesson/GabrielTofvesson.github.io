@@ -1,6 +1,10 @@
 use yew::prelude::*;
+use yew_router::prelude::Navigator;
+use yew_router::prelude::use_navigator;
 use yewprint::Icon;
 use crate::page::Page;
+use crate::page::PageRouter;
+use crate::page::Pages;
 use crate::theme::ThemeContext;
 use crate::theme::ThemeMsg;
 use crate::theme::ThemeProvider;
@@ -11,15 +15,20 @@ use crate::component::actionbar::{Actionbar, ActionbarOption};
 pub fn AppRoot() -> Html {
     html! {
         <ThemeProvider>
-            <ThemedApp />
+            <PageRouter>
+                <ThemedApp />
+            </PageRouter>
         </ThemeProvider>
     }
 }
 
 #[function_component]
 fn ThemedApp() -> Html {
+    let navigator = use_navigator().unwrap();
+
     // Helper function for generating tabs
-    fn page_option(current: &Page, page: Page, state: UseStateHandle<Page>) -> ActionbarOption {
+    fn page_option(current: &Page, page: Page, navigator: Navigator, state: UseStateHandle<Page>) -> ActionbarOption {
+        let is_current = *current == page;
         ActionbarOption::new(
             page.name(),
             match page {
@@ -28,8 +37,11 @@ fn ThemedApp() -> Html {
                 Page::Socials => Icon::SocialMedia,
                 Page::Contact => Icon::Envelope,
             },
-            Callback::from(move |_| state.set(page)),
-            *current == page
+            Callback::from(move |_| {
+                navigator.push(&page);
+                state.set(page);
+            }),
+            is_current
         )
     }
 
@@ -41,10 +53,10 @@ fn ThemedApp() -> Html {
         <>
             <Actionbar>
                 {vec![
-                    page_option(&current_page, Page::Home, page_state.clone()),
-                    page_option(&current_page, Page::Projects, page_state.clone()),
-                    page_option(&current_page, Page::Socials, page_state.clone()),
-                    page_option(&current_page, Page::Contact, page_state),
+                    page_option(&current_page, Page::Home, navigator.clone(), page_state.clone()),
+                    page_option(&current_page, Page::Projects, navigator.clone(), page_state.clone()),
+                    page_option(&current_page, Page::Socials, navigator.clone(), page_state.clone()),
+                    page_option(&current_page, Page::Contact, navigator, page_state),
                     ActionbarOption::new_opt(
                         None,
                         Some(Icon::Flash),
@@ -56,7 +68,7 @@ fn ThemedApp() -> Html {
                 ]}
             </Actionbar>
             <div class="main">
-                {current_page.content()}
+                <Pages />
             </div>
         </>
     }

@@ -1,7 +1,8 @@
 use yew::{function_component, Html, html, Callback, Properties, use_state};
-use yewprint::{Overlay, Icon, IconSize};
+use yewprint::{Overlay, Icon, IconSize, Intent};
 
 const CHEVRON_SIZE: f64 = 40.0;
+const CHEVRON_TYPE: Intent = Intent::Danger;
 
 #[derive(PartialEq)]
 pub struct ImageDescription {
@@ -60,7 +61,7 @@ pub fn ImageViewer(props: &ImageViewerProps) -> Html {
                                     Some(html! {
                                         <Icon
                                             icon={yewprint::Icon::ChevronRight}
-                                            intent={yewprint::Intent::Warning}
+                                            intent={CHEVRON_TYPE}
                                             size={IconSize(CHEVRON_SIZE)}
                                             onclick={Callback::from(move |_| select_next.set(*select_next + 1))}
                                             class="gallery-next"
@@ -75,7 +76,7 @@ pub fn ImageViewer(props: &ImageViewerProps) -> Html {
                                     Some(html! {
                                         <Icon
                                             icon={yewprint::Icon::ChevronLeft}
-                                            intent={yewprint::Intent::Warning}
+                                            intent={CHEVRON_TYPE}
                                             size={IconSize(CHEVRON_SIZE)}
                                             onclick={Callback::from(move |_| select_prev.set(*select_prev - 1))}
                                             class="gallery-prev"

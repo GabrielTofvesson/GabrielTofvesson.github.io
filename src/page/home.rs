@@ -3,7 +3,7 @@ use gloo::utils::document;
 use gloo_net::http::Request;
 use serde::Deserialize;
 use yew::{function_component, html, Html, UseStateHandle, use_state, use_effect_with_deps, Properties, Children, use_context, Callback};
-use yewprint::{Divider, Elevation, Card, Tag, Intent, Icon, Overlay};
+use yewprint::{Divider, Elevation, Card, Tag, Intent, Icon};
 
 use crate::{util::log, theme::{ThemeContext, ThemeState}, component::image_viewer::{ImageDescription, ImageViewer}};
 
