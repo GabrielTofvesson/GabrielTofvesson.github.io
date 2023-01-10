@@ -1,0 +1,22 @@
+[
+    {
+        "link": "https://github.com/GabrielTofvesson/BankProject",
+        "title": "Bank Project",
+        "description": "Client-server project simulating a simple banking system with hand-written cryptographic and graphics implementations"
+    },
+    {
+        "link": "https://github.com/BTPW",
+        "title": "BTPW", 
+        "description": "Ongoing project developing a password manager with a hardware component for logging in to insecure devices"
+    },
+    {
+        "link": "https://github.com/GabrielTofvesson/ASMThread",
+        "title": "ASMThread",
+        "description": "A simple project in ARM assembly implementing virtual threads and *malloc*"
+    },
+    {
+        "link": "https://github.com/GabrielTofvesson/framebuffer_graphics",
+        "title": "framebuffer graphics",
+        "description": "A little project I created one sleepless night for drawing items to a Linux framebuffer device. It implements double-buffering, simple shapes and a custom file format for defining blit masks/shapes. Additionally, it adds a simple character mapping system on top of the blit system for rudimentary character output"
+    }
+]
