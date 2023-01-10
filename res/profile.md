@@ -1,0 +1,1 @@
+A programmer with a burning passion for data structures, security and efficiency. This personal site was designed entirely using [Yew](https://yew.rs/). I love most kinds of music, but I prefer rock, bossa nova or EDM. I strive to leave people happier than when I met them.
