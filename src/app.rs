@@ -11,7 +11,6 @@ use crate::theme::ThemeContext;
 use crate::theme::ThemeMsg;
 use crate::theme::ThemeProvider;
 use crate::component::actionbar::{Actionbar, ActionbarOption};
-use crate::util::log;
 
 
 #[function_component]
@@ -38,6 +37,7 @@ fn ThemedApp() -> Html {
                 Page::Home => Icon::Home,
                 Page::Projects => Icon::Code,
                 Page::Socials => Icon::SocialMedia,
+                Page::Gallery => Icon::Camera,
                 Page::Contact => Icon::Envelope,
             },
             Callback::from(move |_| {
@@ -62,11 +62,15 @@ fn ThemedApp() -> Html {
 
     html! {
         <>
+            <div class="main">
+                <Pages />
+            </div>
             <Actionbar>
                 {vec![
                     page_option(&current_page, Page::Home, navigator.clone(), page_state.clone()),
                     page_option(&current_page, Page::Projects, navigator.clone(), page_state.clone()),
                     page_option(&current_page, Page::Socials, navigator.clone(), page_state.clone()),
+                    page_option(&current_page, Page::Gallery, navigator.clone(), page_state.clone()),
                     page_option(&current_page, Page::Contact, navigator, page_state),
                     ActionbarOption::new_opt(
                         None,
@@ -78,9 +82,6 @@ fn ThemedApp() -> Html {
                     )
                 ]}
             </Actionbar>
-            <div class="main">
-                <Pages />
-            </div>
         </>
     }
 }

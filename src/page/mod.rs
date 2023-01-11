@@ -5,6 +5,7 @@ mod home;
 mod projects;
 mod contact;
 mod socials;
+mod gallery;
 
 #[derive(PartialEq, Copy, Clone, Routable)]
 pub enum Page {
@@ -14,19 +15,23 @@ pub enum Page {
     #[at("/projects")]
     Projects,
 
+    #[at("/socials")]
+    Socials,
+
+    #[at("/photos")]
+    Gallery,
+
     #[at("/contacts")]
     Contact,
-
-    #[at("/socials")]
-    Socials
 }
 
 fn switch(page: Page) -> Html {
     match page {
         Page::Home => html!{<home::Home />},
-        Page::Contact => html!{<contact::Contact />},
-        Page::Socials => html!{<socials::Socials />},
         Page::Projects => html!{<projects::Projects />},
+        Page::Socials => html!{<socials::Socials />},
+        Page::Gallery => html!{<gallery::Gallery />},
+        Page::Contact => html!{<contact::Contact />},
     }
 }
 
@@ -57,6 +62,7 @@ impl Page {
             Page::Home => "Home",
             Page::Projects => "Projects",
             Page::Socials => "Social Media",
+            Page::Gallery => "Gallery",
             Page::Contact => "Contact"
         }
     }

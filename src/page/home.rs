@@ -5,7 +5,7 @@ use serde::Deserialize;
 use yew::{function_component, html, Html, UseStateHandle, use_state, use_effect_with_deps, Properties, Children, use_context, Callback};
 use yewprint::{Divider, Elevation, Card, Tag, Intent, Icon};
 
-use crate::{util::log, theme::{ThemeContext, ThemeState}, component::image_viewer::{ImageDescription, ImageViewer}};
+use crate::{util::log, theme::{ThemeContext, ThemeState}, component::image_viewer::{ImageDescription, DefaultImageViewer}};
 
 #[derive(Debug)]
 enum TagType {
@@ -216,12 +216,8 @@ fn HomeCard(props: &HomeCardProps) -> Html {
                                 if image.image.clickable {
                                     if let ImageSource::Link(link) = &image.image.source {
                                         html! {
-                                            <ImageViewer
-                                                images={vec![
-                                                    ImageDescription::new(link, "This is me"),
-                                                    ImageDescription::new(link, "This is also me"),
-                                                    ImageDescription::new(link, "This is not me")
-                                                ]}
+                                            <DefaultImageViewer
+                                                images={vec![ ImageDescription::new_blank(link) ]}
                                                 open={*overlay_state}
                                                 onclose={Callback::from(move |_| overlay_state.set(false))} />
                                         }
