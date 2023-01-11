@@ -248,7 +248,7 @@ body {
 .image-gallery div {
     width: 100% !important;
     height: auto !important;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .image-gallery div img {
