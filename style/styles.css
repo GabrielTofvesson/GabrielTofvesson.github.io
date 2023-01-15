@@ -1,31 +1,4 @@
-:root {
-    --bg-color: #f5f8fa;
-    --gallery-scale: 95vmin;
-}
 
-:root[data-theme='dark'] {
-    --bg-color: #00251a;
-    --color-primary: #004d40;
-    --color-accent: #39796b;
-}
-
-:root[data-theme='mauve'] {
-    --bg-color: #560027;
-    --color-primary: #880e4f;
-    --color-accent: #bc477b;
-}
-
-:root[data-theme='gray'] {
-    --bg-color: #455A64;
-    --color-primary: #607D8B;
-    --color-accent: #212121;
-}
-
-:root[data-theme='purple'] {
-    --bg-color: #512DA8;
-    --color-primary: #673AB7;
-    --color-accent: #009688;
-}
 
 .bp3-card.bp3-dark, .bp3-dark .bp3-card {
     background-color: var(--color-primary) !important;
@@ -51,11 +24,6 @@ body {
     transition-duration: 250ms;
     
     font-family: 'Roboto', sans-serif !important;
-}
-
-.main {
-    margin-top: 41px;
-    padding: 20px;
 }
 
 .actionbar {
@@ -118,6 +86,7 @@ body {
     align-items: center;
     width: min-content;
 }
+/*
 
 @media only screen and (max-width: 1000px) {
     .home-content {
@@ -132,6 +101,7 @@ body {
         align-items: center;
     }
 }
+*/
 
 .home-image {
     width: 10%;

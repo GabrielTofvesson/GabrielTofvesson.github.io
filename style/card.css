@@ -1,0 +1,17 @@
+:root {
+    --card-shadow: var(--drop-shadow-dark);
+    --card-color: var(--color-primary);
+    --card-elevation: 5px;
+    --card-elevation-hover: 15px;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 0 var(--card-elevation) var(--card-shadow);
+    background-color: var(--card-color);
+    padding: 10px;
+}
+
+.card:hover {
+    box-shadow: 0 0 var(--card-elevation-hover) var(--card-shadow);
+}

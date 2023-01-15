@@ -1,0 +1,54 @@
+:root {
+    --drop-shadow: rgba(0, 0, 0, 0.61);
+    --drop-shadow-dark: rgba(255, 255, 255, 0.61);
+    --bg-color: #f5f8fa;
+    --color-primary: rgb(210, 210, 210);
+    --color-accent: rgb(160, 200, 160);
+    --color-text: rgb(0, 0, 0);
+}
+
+:root[data-theme='dark'] {
+    --drop-shadow: rgba(255, 255, 255, 0.61);
+    --drop-shadow-dark: rgba(0, 0, 0, 0.61);
+    --bg-color: #00251a;
+    --color-primary: #004d40;
+    --color-accent: #39796b;
+    --color-text: #f5f8fa;
+}
+
+:root[data-theme='mauve'] {
+    --drop-shadow: rgba(255, 255, 255, 0.61);
+    --drop-shadow-dark: rgba(0, 0, 0, 0.61);
+    --bg-color: #560027;
+    --color-primary: #880e4f;
+    --color-accent: #bc477b;
+    --color-text: #f5f8fa;
+}
+
+:root[data-theme='gray'] {
+    --drop-shadow: rgba(0, 0, 0, 0.61);
+    --drop-shadow-dark: rgba(0, 0, 0, 0.61);
+    --bg-color: #455A64;
+    --color-primary: #607D8B;
+    --color-accent: #212121;
+    --color-text: #f5f8fa;
+}
+
+:root[data-theme='purple'] {
+    --drop-shadow: rgba(255, 255, 255, 0.61);
+    --drop-shadow-dark: rgba(0, 0, 0, 0.61);
+    --bg-color: #512DA8;
+    --color-primary: #673AB7;
+    --color-accent: #009688;
+    --color-text: rgb(0, 0, 0);
+}
+
+html {
+    color: var(--color-text);
+    transition: color 100ms;
+}
+
+html[data-theme="dark"] > body {
+    background-color: var(--bg-color);
+    font-family: 'Roboto', sans-serif !important;
+}

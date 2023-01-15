@@ -1,0 +1,98 @@
+:root {
+    --overlay-gallery-scale: 95vmin;
+}
+
+/* Overlay image viewer */
+.overlay-gallery {
+    width: var(--overlay-gallery-scale);
+    height: var(--overlay-gallery-scale);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+}
+
+.overlay-gallery > div:nth-of-type(1) {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay-gallery > div:nth-of-type(2) {
+    transform: translate(calc(calc(var(--overlay-gallery-scale) / 2) - 50%), 0);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.overlay-gallery > div:nth-of-type(2) > img {
+    float: left;
+    max-width: var(--overlay-gallery-scale);
+    max-height: var(--overlay-gallery-scale);
+    position: relative;
+}
+
+.overlay-gallery > div:nth-of-type(2) > div {
+    bottom: 0;
+    padding: 60px 10px 10px 10px;
+    width: 100%;
+    overflow-wrap: break-word;
+    background: linear-gradient(to top, rgba(0, 75, 196, 0.699), rgba(133, 180, 255, 0));
+}
+
+/* Gallery overlay transition properties */
+.overlay-gallery > div:nth-of-type(2) > div,
+.overlay-gallery-next,
+.overlay-gallery-prev {
+    position: absolute;
+    transition: opacity 250ms;
+    transition-timing-function: cubic-bezier(0.1, 0.7, 1.0);
+    opacity: 0;
+}
+
+/* Image viewer overlay button positioning */
+.overlay-gallery-next,
+.overlay-gallery-prev {
+    top: 50%;
+    height: max(100%, 10px);
+    width: 12.5%;
+    display: flex !important;
+    align-items: center;
+}
+
+.overlay-gallery-next {
+    left: 100%;
+    transform: translate(-100%, -50%);
+    padding-right: 2.5%;
+    padding-left: 5%;
+    justify-content: flex-end;
+}
+
+.overlay-gallery-prev {
+    left: 0%;
+    transform: translate(-0%, -50%);
+    padding-left: 2.5%;
+    padding-right: 5%;;
+    justify-content: flex-start;
+}
+
+.overlay-gallery > div:nth-of-type(2):hover > div,
+.overlay-gallery:hover .overlay-gallery-next,
+.overlay-gallery:hover .overlay-gallery-prev {
+    opacity: 1;
+}
+
+@media only screen and (orientation: portrait) {
+    .overlay-gallery > div:nth-of-type(2) > div,
+    .overlay-gallery .overlay-gallery-next,
+    .overlay-gallery .overlay-gallery-prev {
+        opacity: 1;
+    }
+}
+
+.overlay-gallery-next:hover,
+.overlay-gallery-prev:hover {
+    cursor: pointer;
+}
