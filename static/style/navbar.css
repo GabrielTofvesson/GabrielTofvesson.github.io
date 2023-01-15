@@ -23,6 +23,11 @@
     user-select: none;
 }
 
+/* Why!??! */
+.navbar span {
+  padding-top: 2px;
+}
+
 .navbar > div:nth-child(1) {
   display: none;
   padding-top: var(--navbar-padding);
