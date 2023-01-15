@@ -1,9 +1,7 @@
 use web_sys::MouseEvent;
-use yew::{function_component, Html, html, Callback, Properties, use_state};
-use yewprint::{Overlay, Icon, IconSize, Intent};
+use yew::{function_component, Html, html, Callback, Properties, Component};
 
-const CHEVRON_SIZE: f64 = 40.0;
-const CHEVRON_TYPE: Intent = Intent::Danger;
+use crate::component::{overlay::Overlay, fa_icon::{FAIcon, FontawesomeIcon, FontawesomeSize}};
 
 #[derive(PartialEq, Clone)]
 pub struct ImageDescription {
@@ -36,20 +34,24 @@ pub struct DefaultImageViewerProps {
     pub onclose: Callback<()>,
 }
 
+/*
 #[function_component]
 pub fn DefaultImageViewer(props: &DefaultImageViewerProps) -> Html {
-    let selected_image = use_state(|| 0);
-    let (select_next, select_prev) = (selected_image.clone(), selected_image.clone());
+    let selected_image = use_state_eq(|| 0);
+    let select_next = selected_image.setter();
+    let select_prev = selected_image.setter();
 
-    let (has_next, has_prev) = (props.infinite || *selected_image < props.images.len() - 1, props.infinite || *selected_image > 0);
-    let next = (*select_next + props.images.len() + 1) % props.images.len();
-    let prev = (*select_prev + props.images.len() - 1) % props.images.len();
+    let has_next = props.infinite || *selected_image < props.images.len() - 1;
+    let has_prev = props.infinite || *selected_image > 0;
+    let next = (*selected_image + props.images.len() + 1) % props.images.len();
+    let prev = (*selected_image + props.images.len() - 1) % props.images.len();
+    let onclose = props.onclose.clone();
 
     html! {
         <ImageViewer
             image={props.images[*selected_image].clone()}
             open={props.open && !props.images.is_empty()}
-            onclose={props.onclose.clone()}
+            onclose={Callback::from(move |_| onclose.emit(()))}
             has_next={has_next}
             has_prev={has_prev}
             onnext={Callback::from(move |_| if has_next {
@@ -59,6 +61,70 @@ pub fn DefaultImageViewer(props: &DefaultImageViewerProps) -> Html {
                 select_prev.set(prev);
             })}
         />
+    }
+}
+*/
+
+pub enum DefaultImageViewerMessage {
+    Next,
+    Prev
+}
+
+pub struct DefaultImageViewer {
+    current: usize,
+}
+
+impl Component for DefaultImageViewer {
+    type Message = DefaultImageViewerMessage;
+
+    type Properties = DefaultImageViewerProps;
+
+    fn create(_ctx: &yew::Context<Self>) -> Self {
+        Self { current: 0 }
+    }
+
+    fn view(&self, ctx: &yew::Context<Self>) -> Html {
+        let DefaultImageViewerProps {
+            images,
+            open,
+            infinite,
+            onclose,
+        } = ctx.props();
+        
+        let has_next = *infinite || self.current < images.len() - 1;
+        let has_prev = *infinite || self.current > 0;
+        let onclose = onclose.clone();
+
+        html! {
+            <ImageViewer
+                image={images[self.current].clone()}
+                open={*open && !images.is_empty()}
+                onclose={Callback::from(move |_| onclose.emit(()))}
+                has_next={has_next}
+                has_prev={has_prev}
+                onnext={if has_next { ctx.link().callback(|_| DefaultImageViewerMessage::Next)} else { Default::default() }}
+                onprev={if has_prev { ctx.link().callback(|_| DefaultImageViewerMessage::Prev)} else { Default::default() }}
+            />
+        }
+    }
+
+    fn update(&mut self, ctx: &yew::Context<Self>, msg: Self::Message) -> bool {
+        let images = &ctx.props().images;
+
+        self.current = match msg {
+            DefaultImageViewerMessage::Next => {
+                if self.current == images.len() - 1 { 0 } else { self.current + 1 }
+            },
+            DefaultImageViewerMessage::Prev => {
+                if self.current == 0 { images.len() - 1 } else { self.current - 1 }
+            }
+        };
+
+        images.len() > 1
+    }
+
+    fn changed(&mut self, ctx: &yew::Context<Self>, old_props: &Self::Properties) -> bool {
+        ctx.props() != old_props
     }
 }
 
@@ -81,18 +147,27 @@ pub fn ImageViewer(props: &ImageViewerProps) -> Html {
     html! {
         <>
             <Overlay
-                class="gallery"
+                class="overlay-gallery"
                 open={props.open && props.image.is_some()}
-                onclose={&props.onclose}>
+                onclick={Callback::from(move |_| onclose.emit(()))}>
                 <>
-                    <div onclick={Callback::from(move |_| onclose.emit(()))}></div>
+                    <div></div>
                     {
                         if let Some(image_desc) = props.image.as_ref() {
                             let onclose = props.onclose.clone();
                             Some(html! {
                                 <>
-                                    <div onclick={Callback::from(move |_| onclose.emit(()))}>
-                                        <img src={if image_desc.link.starts_with("https?://") { image_desc.link.to_string() } else { format!("/img/{}", image_desc.link) }} />
+                                    <div>
+                                        <img
+                                            onclick={Callback::from(move |_| onclose.emit(()))}
+                                            src={
+                                                if image_desc.link.starts_with("https?://") {
+                                                    image_desc.link.to_string()
+                                                } else {
+                                                    format!("/img/{}", image_desc.link)
+                                                }
+                                            }
+                                        />
                                         {
                                             if let Some(description) = &image_desc.description {
                                                 Some(html! {
@@ -106,13 +181,13 @@ pub fn ImageViewer(props: &ImageViewerProps) -> Html {
                                         // Controls: Next
                                         if props.has_next {
                                             Some(html! {
-                                                <Icon
-                                                    icon={yewprint::Icon::ChevronRight}
-                                                    intent={CHEVRON_TYPE}
-                                                    size={IconSize(CHEVRON_SIZE)}
-                                                    onclick={props.onnext.clone()}
-                                                    class="gallery-next"
-                                                    />
+                                                <div class="overlay-gallery-next">
+                                                    <FAIcon
+                                                        icon={FontawesomeIcon::ChevronRight}
+                                                        size={FontawesomeSize::XL}
+                                                        onclick={props.onnext.clone()}
+                                                        />
+                                                </div>
                                             })
                                         } else { None }
                                     }
@@ -121,13 +196,13 @@ pub fn ImageViewer(props: &ImageViewerProps) -> Html {
                                         // Controls: Prev
                                         if props.has_prev {
                                             Some(html! {
-                                                <Icon
-                                                    icon={yewprint::Icon::ChevronLeft}
-                                                    intent={CHEVRON_TYPE}
-                                                    size={IconSize(CHEVRON_SIZE)}
-                                                    onclick={props.onprev.clone()}
-                                                    class="gallery-prev"
-                                                    />
+                                                <div class="overlay-gallery-prev">
+                                                    <FAIcon
+                                                        icon={FontawesomeIcon::ChevronLeft}
+                                                        size={FontawesomeSize::XL}
+                                                        onclick={props.onprev.clone()}
+                                                        />
+                                                </div>
                                             })
                                         } else { None }
                                     }

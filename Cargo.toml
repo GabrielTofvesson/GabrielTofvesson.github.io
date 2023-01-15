@@ -17,7 +17,7 @@ crate-type = ["cdylib"]
 console_error_panic_hook = { version = "0.1.6", optional = true }
 
 wasm-bindgen = "0.2"
-web-sys = { version = "0.3", features = ["Window", "MediaQueryList"] }
+web-sys = { version = "0.3", features = ["Window", "MediaQueryList", "DomTokenList"] }
 js-sys = "0.3"
 
 # `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
@@ -29,7 +29,7 @@ wee_alloc = { version = "0.4.5", optional = false }
 
 yew = { version = "0.20.0", features = ["csr"] }
 yew-router = { version = "0.17.0" }
-yewprint = "0.4.0"
+#yewprint = "0.4.0"
 gloo = "0.8.0"
 gloo-events = "0.1"
 futures = "0.3.25"

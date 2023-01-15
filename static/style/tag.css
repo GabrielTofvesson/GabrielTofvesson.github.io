@@ -1,0 +1,61 @@
+:root {
+    --tag-color-blue: rgba(19, 124, 189, 0.3);
+    --tag-color-red: rgba(219, 55, 55, 0.25);
+    --tag-color-orange: rgba(217, 130, 43, 0.25);
+    --tag-color-green: rgba(15, 153, 96, 0.25);
+
+    --tag-shadow: var(--drop-shadow);
+    
+    --tag-color-text-blue: #48aff0;
+    --tag-color-text-red: #ff7373;
+    --tag-color-text-orange: #ffb366;
+    --tag-color-text-green: #3dcc91;
+}
+
+:root[data-theme="dark"] {
+    --tag-color-blue: #303f9f4d;
+    --tag-color-red: #7f00004d;
+    --tag-color-orange: #e651004d;
+    --tag-color-green: #33691e4d;
+
+    --tag-color-text-blue: #448aff;
+    --tag-color-text-red: #EF9A9A;
+    --tag-color-text-orange: #FFB74D;
+    --tag-color-text-green: #AED581;
+}
+
+span.tag {
+    border-radius: 20px;
+    padding: 2.5px;
+    user-select: none;
+}
+
+span.tag:hover {
+    box-shadow: 0 0 5px var(--tag-shadow);
+    cursor: pointer;
+}
+
+span.tag > span {
+    padding: 2.5px;
+    user-select: none;
+}
+
+span.tag.blue {
+    background-color: var(--tag-color-blue);
+    color: var(--tag-color-text-blue);
+}
+
+span.tag.red {
+    background-color: var(--tag-color-red);
+    color: var(--tag-color-text-red);
+}
+
+span.tag.orange {
+    background-color: var(--tag-color-orange);
+    color: var(--tag-color-text-orange);
+}
+
+span.tag.green {
+    background-color: var(--tag-color-green);
+    color: var(--tag-color-text-green);
+}

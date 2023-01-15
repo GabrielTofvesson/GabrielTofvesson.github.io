@@ -2,10 +2,8 @@ use comrak::{markdown_to_html, ComrakOptions};
 use gloo::utils::document;
 use gloo_net::http::Request;
 use serde::Deserialize;
-use yew::{function_component, html, Html, UseStateHandle, use_state, use_effect_with_deps, Properties, Children, use_context, Callback};
-use yewprint::{Divider, Elevation, Card, Tag, Intent, Icon};
-
-use crate::{util::log, theme::{ThemeContext, ThemeState}, component::image_viewer::{ImageDescription, DefaultImageViewer}};
+use yew::{function_component, html, Html, UseStateHandle, use_effect_with_deps, Properties, Children, use_context, Callback, use_state_eq};
+use crate::{util::log, theme::{ThemeContext, ThemeState}, component::{card::Card, tag::{Tag, TagColor}}};
 
 #[derive(Debug)]
 enum TagType {
@@ -13,28 +11,15 @@ enum TagType {
 }
 
 #[derive(PartialEq)]
-enum ImageSource {
-    Link(String),
-    Icon(Icon, Intent)
-}
-
-#[derive(PartialEq)]
 struct ImageResource {
-    source: ImageSource,
+    source: String,
     clickable: bool
 }
 
 impl ImageResource {
     pub fn new_link(link: String, clickable: bool) -> Self {
         Self {
-            source: ImageSource::Link(link),
-            clickable
-        }
-    }
-
-    pub fn new_icon(icon: Icon, intent: Intent, clickable: bool) -> Self {
-        Self {
-            source: ImageSource::Icon(icon, intent),
+            source: link,
             clickable
         }
     }
@@ -65,7 +50,7 @@ pub fn Home() -> Html {
     html! {
         <>
             <HomeTitle />
-            <Divider />
+            <hr />
             <div class="home-content">
                 <Profile />
             </div>
@@ -109,14 +94,14 @@ fn get_json_resource<T>(file: &'static str, on_result: impl FnOnce(Vec<T>) -> ()
 
 #[function_component]
 fn ProfileTags() -> Html {
-    let natural_languages: UseStateHandle<Vec<String>> = use_state(|| vec![]);
-    let code_languages: UseStateHandle<Vec<String>> = use_state(|| vec![]);
-    let interests: UseStateHandle<Vec<String>> = use_state(|| vec![]);
+    let natural_languages: UseStateHandle<Vec<String>> = use_state_eq(|| vec![]);
+    let code_languages: UseStateHandle<Vec<String>> = use_state_eq(|| vec![]);
+    let interests: UseStateHandle<Vec<String>> = use_state_eq(|| vec![]);
 
 
     // TODO: Cache results
     {
-        let natural_languages = natural_languages.clone();
+        let natural_languages = natural_languages.setter();
         use_effect_with_deps(
             move |_| get_json_resource(
                 "/res/languages.json",
@@ -127,7 +112,7 @@ fn ProfileTags() -> Html {
     }
 
     {
-        let code_languages = code_languages.clone();
+        let code_languages = code_languages.setter();
         use_effect_with_deps(
             move |_| get_json_resource(
                 "/res/code.json",
@@ -138,7 +123,7 @@ fn ProfileTags() -> Html {
     }
 
     {
-        let interests = interests.clone();
+        let interests = interests.setter();
         use_effect_with_deps(
             move |_| get_json_resource(
                 "/res/interests.json",
@@ -155,18 +140,14 @@ fn ProfileTags() -> Html {
     ].into_iter().flatten().map(|(tag, tag_type)| {
         html! {
             <Tag
-                interactive=true
-                minimal=true
-                round=true
-                intent={
+                text={tag.clone()}
+                color={
                     match tag_type {
-                        TagType::NaturalLanguage => Intent::Primary,
-                        TagType::CodeLanguage => Intent::Warning,
-                        TagType::Interest => Intent::Success
+                        TagType::NaturalLanguage => TagColor::Blue,
+                        TagType::CodeLanguage => TagColor::Orange,
+                        TagType::Interest => TagColor::Green
                     }
-                }>
-                {tag}
-            </Tag>
+                }/>
         }
     }).collect::<Html>();
 
@@ -177,9 +158,9 @@ fn ProfileTags() -> Html {
 
 #[function_component]
 fn Profile() -> Html {
-    let profile_text = use_state(|| "".to_owned());
+    let profile_text = use_state_eq(|| "".to_owned());
     {
-        let profile_text = profile_text.clone();
+        let profile_text = profile_text.setter();
         use_effect_with_deps(move |_| {
             get_text_resource("/res/profile.md".to_owned(), move |text| profile_text.set(markdown_to_html(&text, &ComrakOptions::default())));
         }, ());
@@ -195,38 +176,19 @@ fn Profile() -> Html {
 
 #[function_component]
 fn HomeCard(props: &HomeCardProps) -> Html {
-    let overlay_state = use_state(|| false);
-    let open_overlay_state = overlay_state.clone();
     html! {
-        <Card elevation={Elevation::Level3} interactive=true class="home-card" onclick={Callback::from(move |_| open_overlay_state.set(true))}>
+        <Card class="home-card">
             {
                 if let Some(image) = &props.image {
                     html! {
                         <div class="home-tag">
-                            {
-                                match &image.image.source {
-                                    ImageSource::Link(link) => html! {
-                                        <img class="home-image circle" src={if link.starts_with("https?://") { link.to_string() } else { format!("/img/{}", link) }} />
-                                    },
-                                    ImageSource::Icon(icon, intent) => html! { <Icon {icon} {intent} size={20}/> }
-                                }
-                            }
-
-                            {
-                                if image.image.clickable {
-                                    if let ImageSource::Link(link) = &image.image.source {
-                                        html! {
-                                            <DefaultImageViewer
-                                                images={vec![ ImageDescription::new_blank(link) ]}
-                                                open={*overlay_state}
-                                                onclose={Callback::from(move |_| overlay_state.set(false))} />
-                                        }
-                                    } else { html! {} }
+                            <img
+                                class="home-image circle"
+                                src={if image.image.source.starts_with("https?://") {
+                                    image.image.source.to_string()
                                 } else {
-                                    html! {}
-                                }
-                            }
-                            
+                                    format!("/img/{}", image.image.source)
+                                }} />
                             <b>{image.description}</b>
                         </div>
                     }
@@ -241,7 +203,7 @@ fn HomeCard(props: &HomeCardProps) -> Html {
 
 #[function_component]
 fn Github() -> Html {
-    let github_entries: UseStateHandle<Vec<GithubEntry>> = use_state(|| vec![]);
+    let github_entries: UseStateHandle<Vec<GithubEntry>> = use_state_eq(|| vec![]);
     {
         let github_entries = github_entries.clone();
         use_effect_with_deps(move |_| get_json_resource("/res/github.json", move |it| github_entries.set(it)), ());
@@ -257,7 +219,7 @@ fn Github() -> Html {
                 github_entries.iter().map(|it| {
                     let link = it.link.clone();
                     html! {
-                        <Card elevation={Elevation::Level3} interactive=true onclick={Callback::from(move |_| {
+                        <Card onclick={Callback::from(move |_| {
                             if let Err(_) = document().location().unwrap().set_href(link.as_str()) {
                                 log("Couldn't change href");
                             }

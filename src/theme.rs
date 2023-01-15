@@ -7,27 +7,14 @@ use crate::util::log;
 
 fn set_global_dark(is_dark: bool) {
     let root = document().get_elements_by_tag_name("html").get_with_index(0).expect("Root html tag");
-    let class_list = root.get_elements_by_tag_name("body").get_with_index(0).expect("Body tag").class_list();
 
     if is_dark {
         if let Err(_) = root.set_attribute("data-theme", "dark") {
             log("Couldn't set attribute 'data-theme' on root");
         }
-
-        if !class_list.contains("bp3-dark") {
-            if let Err(_) = class_list.add_1("bp3-dark") {
-                log("Couldn't set class 'bp3-dark' on root")
-            }
-        }
     } else {
         if let Err(_) = root.remove_attribute("data-theme") {
             log("Couldn't remove attribute 'data-theme' from root");
-        }
-
-        if class_list.contains("bp3-dark") {
-            if let Err(_) = class_list.remove_1("bp3-dark") {
-                log("Couldn't remove class 'bp3-dark' from root")
-            }
         }
     }
 }

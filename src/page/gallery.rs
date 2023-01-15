@@ -1,7 +1,7 @@
 use web_sys::MouseEvent;
-use yew::{function_component, html, Html, use_state, Callback};
+use yew::{function_component, html, Html, Callback, use_state_eq};
 
-use crate::{component::image_viewer::{ImageDescription, ImageViewer}};
+use crate::component::image_viewer::{ImageDescription, ImageViewer};
 
 const GALLERY: [&str; 13] = [
     "gallery-1.jpg",
@@ -21,19 +21,19 @@ const GALLERY: [&str; 13] = [
 
 fn gallery_entry(link: &&str, onclick: Callback<MouseEvent>) -> Html {
     html! {
-        <div><img src={format!("/img/{}", link)} onclick={onclick}/></div>
+        <div><img src={format!("/img/{link}")} onclick={onclick}/></div>
     }
 }
 
 #[function_component]
 pub fn Gallery() -> Html {
-    let images = GALLERY.iter().map(|it| ImageDescription::new_blank(it.to_string())).collect::<Vec<ImageDescription>>();
-    let is_open = use_state(|| false);
-    let selected_image = use_state(|| 0);
-    let select_next = selected_image.clone();
-    let select_prev = selected_image.clone();
-    let next = (*select_next + images.len() + 1) % images.len();
-    let prev = (*select_prev + images.len() - 1) % images.len();
+    let images = GALLERY.iter().map(|it| ImageDescription::new(it.to_string(), it)).collect::<Vec<ImageDescription>>();
+    let is_open = use_state_eq(|| false);
+    let selected_image = use_state_eq(|| 0);
+    let select_next = selected_image.setter();
+    let select_prev = selected_image.setter();
+    let next = (*selected_image + images.len() + 1) % images.len();
+    let prev = (*selected_image + images.len() - 1) % images.len();
     
     html! {
         <>
